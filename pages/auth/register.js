@@ -3,7 +3,7 @@ import React, {useState} from "react";
 // layout for page
 
 import Auth from "layouts/Auth.js";
-import {signup} from "../firebase/auth";
+import {signup} from "../../firebase/auth";
 import Loader from "react-loader-spinner";
 
 function useInput({ type, placeholder /*...*/ }) {

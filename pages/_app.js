@@ -9,7 +9,7 @@ import PageChange from "components/PageChange/PageChange.js";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "styles/tailwind.css";
-import './firebase/config';
+import '../firebase/config';
 
 NProgress.configure({
   minimum: 0.3,
