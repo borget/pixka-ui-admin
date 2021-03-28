@@ -1,10 +1,39 @@
-import React from "react";
+import React, {useState} from "react";
 
 // layout for page
 
 import Auth from "layouts/Auth.js";
+import {signup} from "../firebase/auth";
+import Loader from "react-loader-spinner";
+
+function useInput({ type, placeholder /*...*/ }) {
+  const [value, setValue] = useState("");
+  const input = <input value={value} onChange={e => setValue(e.target.value)} type={type} placeholder={placeholder} className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>;
+  return [value, input];
+}
 
 export default function Register() {
+  const [isLoading, setLoading] = useState(false);
+
+  const [username, userInput] = useInput({ type: "text" , placeholder: "Nombre"});
+  const [email, emailInput] = useInput({ type: "email" , placeholder: "Email"});
+  const [password, passwordInput] = useInput({ type: "password", placeholder: "Contraseña" });
+
+
+  const createAccount = async () => {
+    try {
+      setLoading(true);
+      await signup({
+        userName: username,
+        email: email,
+        password: password
+      });
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }
   return (
     <>
       <div className="container mx-auto px-4 h-full">
@@ -14,7 +43,7 @@ export default function Register() {
               <div className="rounded-t mb-0 px-6 py-6">
                 <div className="text-center mb-3">
                   <h6 className="text-blueGray-500 text-sm font-bold">
-                    Sign up with
+                    Iniciar con
                   </h6>
                 </div>
                 <div className="btn-wrapper text-center">
@@ -32,12 +61,20 @@ export default function Register() {
                     <img alt="..." className="w-5 mr-1" src="/img/google.svg" />
                     Google
                   </button>
+                  <div className="text-left mt-6">
+                    {isLoading ? (<Loader
+                        type="Oval"
+                        color="#00BFFF"
+                        height={50}
+                        width={50}
+                    />) : null}
+                  </div>
                 </div>
                 <hr className="mt-6 border-b-1 border-blueGray-300" />
               </div>
               <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                 <div className="text-blueGray-400 text-center mb-3 font-bold">
-                  <small>Or sign up with credentials</small>
+                  <small>O registrar con credenciales</small>
                 </div>
                 <form>
                   <div className="relative w-full mb-3">
@@ -45,13 +82,11 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      Name
+                      Nombre
                     </label>
-                    <input
-                      type="email"
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Name"
-                    />
+                    <>
+                      {userInput}
+                    </>
                   </div>
 
                   <div className="relative w-full mb-3">
@@ -61,11 +96,9 @@ export default function Register() {
                     >
                       Email
                     </label>
-                    <input
-                      type="email"
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Email"
-                    />
+                    <>
+                      {emailInput}
+                    </>
                   </div>
 
                   <div className="relative w-full mb-3">
@@ -73,13 +106,11 @@ export default function Register() {
                       className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                       htmlFor="grid-password"
                     >
-                      Password
+                      Contraseña
                     </label>
-                    <input
-                      type="password"
-                      className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                      placeholder="Password"
-                    />
+                    <>
+                      {passwordInput}
+                    </>
                   </div>
 
                   <div>
@@ -90,13 +121,13 @@ export default function Register() {
                         className="form-checkbox border-0 rounded text-blueGray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
                       />
                       <span className="ml-2 text-sm font-semibold text-blueGray-600">
-                        I agree with the{" "}
+                        Acepto la {" "}
                         <a
                           href="#pablo"
                           className="text-lightBlue-500"
                           onClick={(e) => e.preventDefault()}
                         >
-                          Privacy Policy
+                          Pol&iacute;tica de privacidad
                         </a>
                       </span>
                     </label>
@@ -106,9 +137,12 @@ export default function Register() {
                     <button
                       className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                       type="button"
+                      onClick={createAccount}
+                      disabled={isLoading}
                     >
-                      Create Account
+                      Crear cuenta
                     </button>
+
                   </div>
                 </form>
               </div>
