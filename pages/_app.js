@@ -10,6 +10,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "styles/tailwind.css";
 import '../firebase/config';
+import {UserProvider} from "../firebase/UserProvider";
 
 NProgress.configure({
   minimum: 0.3,
@@ -54,19 +55,21 @@ export default class MyApp extends App {
     const Layout = Component.layout || (({ children }) => <>{children}</>);
 
     return (
-      <React.Fragment>
-        <Head>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-          />
-          <title>Pixka</title>
-          <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
-        </Head>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </React.Fragment>
+        <UserProvider>
+          <React.Fragment>
+            <Head>
+              <meta
+                  name="viewport"
+                  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+              />
+              <title>Pixka</title>
+              <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+            </Head>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </React.Fragment>
+        </UserProvider>
     );
   }
 }

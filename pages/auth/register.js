@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 
 // layout for page
-
+import { useRouter } from 'next/router'
 import Auth from "layouts/Auth.js";
 import {signup} from "../../firebase/auth";
 import Loader from "react-loader-spinner";
@@ -13,6 +13,7 @@ function useInput({ type, placeholder /*...*/ }) {
 }
 
 export default function Register() {
+  const router = useRouter();
   const [isLoading, setLoading] = useState(false);
 
   const [username, userInput] = useInput({ type: "text" , placeholder: "Nombre"});
@@ -20,10 +21,12 @@ export default function Register() {
   const [password, passwordInput] = useInput({ type: "password", placeholder: "Contraseña" });
 
 
-  const createAccount = async () => {
+  const createAccount = async (e) => {
+    e.preventDefault();
+    let newUser;
     try {
       setLoading(true);
-      await signup({
+      newUser = await signup({
         userName: username,
         email: email,
         password: password
@@ -31,6 +34,11 @@ export default function Register() {
       setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
+    }
+    if (newUser) {
+      await router.push(`/profile/${newUser.uid}`);
+    } else {
       setLoading(false);
     }
   }

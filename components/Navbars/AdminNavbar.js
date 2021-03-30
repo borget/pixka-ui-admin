@@ -1,8 +1,17 @@
 import React from "react";
 
 import UserDropdown from "components/Dropdowns/UserDropdown.js";
+import {signOut} from "../../firebase/auth";
+import {useSession} from "../../firebase/UserProvider";
+import {useRouter} from "next/router";
 
 export default function Navbar() {
+  const {user} = useSession();
+  const router = useRouter();
+  const logOut = async () => {
+    await signOut();
+    await router.push(`/`);
+  };
   return (
     <>
       {/* Navbar */}
@@ -18,6 +27,17 @@ export default function Navbar() {
           </a>
           {/* Form */}
           <form className="md:flex hidden flex-row flex-wrap items-center lg:ml-auto mr-3">
+            {!! user &&
+            <div className="relative flex w-full flex-wrap items-stretch">
+              <button
+                  className="bg-blueGray-700 active:bg-blueGray-600 text-white font-bold uppercase text-xs px-4 py-2 rounded shadow hover:shadow-md outline-none focus:outline-none mr-1 ease-linear transition-all duration-150"
+                  type="button"
+                  onClick={logOut}>
+                Logout
+              </button>
+            </div>
+            }
+
             <div className="relative flex w-full flex-wrap items-stretch">
               <span className="z-10 h-full leading-snug font-normal absolute text-center text-blueGray-300 absolute bg-transparent rounded text-base items-center justify-center w-8 pl-3 py-3">
                 <i className="fas fa-search"></i>
