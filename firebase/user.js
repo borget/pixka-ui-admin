@@ -12,3 +12,8 @@ export const createUserDocument = async (user) => {
 
     return docRef.set(userProfile);
 }
+
+export const updateUserDocument = async (user) => {
+    const docRef = firestore.doc(`/users/${user.uid}`);
+    return docRef.update(user);
+}

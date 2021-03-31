@@ -3,6 +3,7 @@ import {useRouter} from "next/router";
 import {useSession} from "../../firebase/UserProvider";
 import {firestore} from "../../firebase/config";
 import PixkaInput from "../PixkaInput/PixkaInput";
+import {updateUserDocument} from "../../firebase/user";
 // components
 
 export default function CardSettings() {
@@ -14,8 +15,16 @@ export default function CardSettings() {
   const [username, usernameInput, setUsername] = PixkaInput({ type: "text" , placeholder: "Usuario"});
   const [phone, phoneInput, setPhone] = PixkaInput({ type: "text" , placeholder: "Tel"});
 
-  const updateProfile = () => {
+  const updateProfile = async () => {
+    try {
+      if (user) {
+        await updateUserDocument({uid: user.uid, name: username, email: email, phone: phone})
+      }
+    } catch (e){
+      console.error("Update error");
+    } finally {
 
+    }
   }
 
   useEffect(()=> {
