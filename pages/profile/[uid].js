@@ -1,10 +1,30 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import {useSession} from "../../firebase/UserProvider";
 import Navbar from "components/Navbars/AuthNavbar.js";
 import Footer from "components/Footers/Footer.js";
+import {firestore} from "../../firebase/config";
 
 export default function Uid() {
   const {user} = useSession();
+  const [userDocument, setUserDocument] = useState(null);
+
+  useEffect(()=> {
+    const docRef = firestore.collection('users').doc(user.uid);
+    /* NO REAL TIME
+      docRef.get().then((document) =>{
+      if(document.exists){
+        setUserDocument(document.data());
+      }
+    })*/
+    /* REAL TIME UPDATE */
+    const unsubscribe = docRef.onSnapshot((document) => {
+      if(document.exists){
+        const docData = document.data();
+        setUserDocument(docData);
+      }
+    });
+    return unsubscribe;
+  }, [user.uid]);
   return (
     <>
       <Navbar transparent />
@@ -96,8 +116,8 @@ export default function Uid() {
                   </div>
                 </div>
                 <div className="text-center mt-12">
-                  {user ? (<h3 className="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                    {user.displayName}
+                  {userDocument ? (<h3 className="text-4xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
+                    {JSON.stringify(userDocument)}
                   </h3>) : "No user"}
 
                   <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">

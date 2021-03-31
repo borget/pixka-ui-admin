@@ -1,8 +1,43 @@
-import React from "react";
-
+import React, {useState, useEffect} from "react";
+import {useRouter} from "next/router";
+import {useSession} from "../../firebase/UserProvider";
+import {firestore} from "../../firebase/config";
+import PixkaInput from "../PixkaInput/PixkaInput";
 // components
 
 export default function CardSettings() {
+  const {user} = useSession();
+  const router = useRouter()
+  const {id} = router.query
+  const [userDocument, setUserDocument] = useState(null);
+  const [email, emailInput, setEmail] = PixkaInput({ type: "email" , placeholder: "Email"});
+  const [username, usernameInput, setUsername] = PixkaInput({ type: "text" , placeholder: "Usuario"});
+  const [phone, phoneInput, setPhone] = PixkaInput({ type: "text" , placeholder: "Tel"});
+
+  const updateProfile = () => {
+
+  }
+
+  useEffect(()=> {
+    const docRef = firestore.collection('users').doc(user.uid);
+    /* NO REAL TIME
+      docRef.get().then((document) =>{
+      if(document.exists){
+        setUserDocument(document.data());
+      }
+    })*/
+    /* REAL TIME UPDATE */
+    const unsubscribe = docRef.onSnapshot((document) => {
+      if(document.exists){
+        const docData = document.data();
+        setUserDocument(docData);
+        setEmail(docData.email);
+        setUsername(docData.name);
+        setPhone(docData.phone);
+      }
+    });
+    return unsubscribe;
+  }, [user.uid]);
   return (
     <>
       <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
@@ -31,11 +66,7 @@ export default function CardSettings() {
                   >
                     Username
                   </label>
-                  <input
-                    type="text"
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    defaultValue="lucky.jesse"
-                  />
+                  {usernameInput}
                 </div>
               </div>
               <div className="w-full lg:w-6/12 px-4">
@@ -46,11 +77,7 @@ export default function CardSettings() {
                   >
                     Email address
                   </label>
-                  <input
-                    type="email"
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    defaultValue="jesse@example.com"
-                  />
+                  {emailInput}
                 </div>
               </div>
               <div className="w-full lg:w-6/12 px-4">
@@ -59,16 +86,12 @@ export default function CardSettings() {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                   >
-                    First Name
+                    Tel&eacute;fono
                   </label>
-                  <input
-                    type="text"
-                    className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    defaultValue="Lucky"
-                  />
+                  {phoneInput}
                 </div>
               </div>
-              <div className="w-full lg:w-6/12 px-4">
+              {/*<div className="w-full lg:w-6/12 px-4">
                 <div className="relative w-full mb-3">
                   <label
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -81,6 +104,22 @@ export default function CardSettings() {
                     className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     defaultValue="Jesse"
                   />
+                </div>
+              </div>*/}
+              <div className="w-full lg:w-6/12 px-4">
+                <div className="relative w-full mb-3">
+                  <label
+                      className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                      htmlFor="grid-password"
+                  >&nbsp;</label>
+                  <button
+                      className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                      type="button"
+                      onClick={updateProfile}
+                      //disabled={isLoading}
+                  >
+                    Actualizar
+                  </button>
                 </div>
               </div>
             </div>

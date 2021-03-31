@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import Link from "next/link";
-
+import PixkaInput from 'components/PixkaInput/PixkaInput'
 // layout for page
 
 import Auth from "layouts/Auth.js";
@@ -8,18 +8,11 @@ import {useRouter} from "next/router";
 import {signin} from "../../firebase/auth";
 import Loader from "react-loader-spinner";
 
-function useInput({ type, placeholder /*...*/ }) {
-  const [value, setValue] = useState("");
-  const input = <input value={value} onChange={e => setValue(e.target.value)} type={type} placeholder={placeholder} className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>;
-  return [value, input];
-}
-
 export default function Login() {
   const router = useRouter();
   const [isLoading, setLoading] = useState(false);
-  const [email, emailInput] = useInput({ type: "email" , placeholder: "Email"});
-  const [password, passwordInput] = useInput({ type: "password", placeholder: "Contraseña" });
-
+  const [email, emailInput] = PixkaInput({ type: "email" , placeholder: "Email"});
+  const [password, passwordInput] = PixkaInput({ type: "password", placeholder: "Contraseña" });
 
   const login = async () => {
     console.log('login ...');

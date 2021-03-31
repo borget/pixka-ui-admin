@@ -1,4 +1,5 @@
 import firebase from "firebase/app";
+import 'firebase/firestore';
 
 if (!firebase.apps.length) {
     firebase.initializeApp({
@@ -12,3 +13,5 @@ if (!firebase.apps.length) {
 }else {
     firebase.app(); // if already initialized, use that one
 }
+
+export const firestore = firebase.firestore();
