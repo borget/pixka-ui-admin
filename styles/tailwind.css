@@ -706,6 +706,11 @@ select {
   line-height: inherit;
 }
 
+.file-input {
+  display: none;
+}
+
+
 [type='file']:focus {
   outline: 1px auto -webkit-focus-ring-color;
 }

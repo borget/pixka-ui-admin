@@ -1,8 +1,31 @@
-import React from "react";
+import React, {useRef, useState, useEffect}   from "react";
+import {getDownloadUrl, uploadImage} from "../../firebase/user";
+import {useSession} from "../../firebase/UserProvider";
 
 // components
 
 export default function CardProfile() {
+  const fileInput = useRef(null);
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const {user} = useSession();
+
+  useEffect(()=> {
+    getDownloadUrl(user.uid).then((url) => !!url && setImageUrl(url));
+  }, user.uid);
+
+  const fileChange = async (files) => {
+    const ref = await uploadImage(user.uid, files[0], updateProgress);
+    const downloadUrl = await ref.getDownloadURL();
+    setImageUrl(downloadUrl);
+  }
+
+  const updateProgress = snapshot => {
+    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    setUploadProgress(progress);
+  }
+
+
   return (
     <>
       <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
@@ -12,9 +35,15 @@ export default function CardProfile() {
               <div className="relative">
                 <img
                   alt="..."
-                  src="/img/team-2-800x800.jpg"
+                  src={imageUrl}
                   className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
                 />
+              </div>
+
+            </div>
+            <div className="w-full px-4 text-center mt-20">
+              <div className="w-full px-4 justify-center">
+                <progress style={{width: '100%'}} max="100" value={uploadProgress}></progress>
               </div>
             </div>
             <div className="w-full px-4 text-center mt-20">
@@ -39,6 +68,17 @@ export default function CardProfile() {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <input className='file-input' type="file" accept=".png, .jpg" ref={fileInput}
+                   onChange={(e) => fileChange(e.target.files)}/>
+            <button
+                className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                type="button"
+                onClick={() => fileInput.current.click()}>
+              Upload
+            </button>
           </div>
           <div className="text-center mt-12">
             <h3 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
