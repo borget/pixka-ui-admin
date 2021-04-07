@@ -32,7 +32,7 @@
     "deploy:firestore": "firebase deploy --only firestore:rules",
     "deploy:storage": "firebase deploy --only storage:rules",
     "deploy:functions": "firebase deploy --only functions",
-    "deploy": " npm run build && npm run export && firebase deploy",
+    "deploy": " npm run build && npm run export && firebase deploy --only hosting,storage,firestore",
     "export": "next export"
   },
   "eslintConfig": {
