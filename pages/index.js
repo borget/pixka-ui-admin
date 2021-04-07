@@ -17,7 +17,6 @@ export default function Landing() {
 
 
     const login = async () => {
-        console.log('login ...');
         let user;
         try {
             setLoading(true);
@@ -31,7 +30,12 @@ export default function Landing() {
             setLoading(false);
         }
         if (user) {
-            await router.push(`/admin/dashboard/`);
+            const token = await user.getIdTokenResult();
+            if (token.claims.admin) {
+                await router.push(`/admin/tables`);
+            } else {
+                await router.push(`/admin/dashboard`);
+            }
         } else {
             setLoading(false);
         }

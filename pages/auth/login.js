@@ -15,7 +15,6 @@ export default function Login() {
   const [password, passwordInput] = PixkaInput({ type: "password", placeholder: "Contraseña" });
 
   const login = async () => {
-    console.log('login ...');
     let user;
     try {
       setLoading(true);

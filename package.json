@@ -11,6 +11,7 @@
     "@tailwindcss/forms": "0.2.1",
     "chart.js": "2.9.4",
     "firebase": "^8.3.1",
+    "firebase-admin": "^9.6.0",
     "gulp": "4.0.2",
     "gulp-append-prepend": "1.0.8",
     "next": "10.0.9",
@@ -28,6 +29,8 @@
     "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm run build:tailwind && npm run dev",
     "build:tailwind": "tailwind build styles/index.css -o styles/tailwind.css",
     "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:firestore": "firebase deploy --only firestore:rules",
+    "deploy:storage": "firebase deploy --only storage:rules",
     "deploy": " npm run build && npm run export && firebase deploy",
     "export": "next export"
   },
